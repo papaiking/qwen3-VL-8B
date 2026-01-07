@@ -1,0 +1,26 @@
+services:
+  qwen3-vl:
+    image: vllm/vllm-openai:latest
+    container_name: qwen3-vl-server
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Optimized for 1x L4 (24GB)
+    command: >
+      serve Qwen/Qwen3-VL-8B-Instruct
+      --max-model-len 32768
+      --gpu-memory-utilization 0.90
+      --trust-remote-code
+      --limit-mm-per-prompt image=5,video=1
+      --max-num-seqs 16
