@@ -19,6 +19,11 @@ $ docker logs -f qwen3-vl-server
 `
 
 ## testing model
+Print all models running:
+`
+curl http://10.148.0.20:8000/v1/models
+`
+
 ```python
 from openai import OpenAI
 
